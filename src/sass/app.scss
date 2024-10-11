@@ -1,0 +1,163 @@
+@import "./element-plus.scss";
+
+@font-face {
+  font-family: "Overused Grotesk";
+  src: url("/fonts/ttf/OverusedGrotesk-Light.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Overused Grotesk Semi Bold";
+  src: url("/fonts/ttf/OverusedGrotesk-SemiBold.ttf") format("truetype");
+}
+
+/* Was used in some places in AI Assistant, experimental */
+// .overused {
+//   font-family: "Overused Grotesk";
+// }
+
+/// Replaces all occurrences of '$search' with '$replace' in the '$string'
+///
+/// Used in dynamic font fetching (using scss variables as font names)
+///
+/// Used to replace space characters in font names with '+' because
+/// that is the format that google fonts API expects.
+///
+/// @param {string} $string
+///   The string that we want to alter.
+/// @param {string} $search
+///   The character we want to replace.
+/// @param {string} $replace
+///   The character we want to replace with.
+@function str-replace($string, $search, $replace: "") {
+  $index: str-index($string, $search);
+
+  @if $index {
+    @return str-slice($string, 1, $index - 1) + $replace +
+      str-replace(
+        str-slice($string, $index + str-length($search)),
+        $search,
+        $replace
+      );
+  }
+
+  @return $string;
+}
+
+@import url("https://fonts.googleapis.com/css2?family=" + str-replace(
+    $primary-font,
+    " ",
+    "+"
+  ) + ":wght@300..700&display=swap");
+
+@import url("https://fonts.googleapis.com/css2?family=" + str-replace(
+    $logo-font,
+    " ",
+    "+"
+  ) + ":wght@300..700&display=swap");
+
+@import url("https://fonts.googleapis.com/css2?family=" + str-replace(
+    $headlines-font,
+    " ",
+    "+"
+  ) + ":wght@300..700&display=swap");
+
+ion-content.background {
+  --background: url($background-image) 0 0/100% 100% no-repeat;
+}
+
+html {
+  --ion-default-font: #{$primary-font};
+  --ion-font-family: #{$primary-font};
+  color: $text-color-default;
+  --ion-background-color: #{$background-color};
+  --ion-text-color: #{$text-color-default};
+
+  --scrollbar-color-thumb: #{$secondary-color};
+  --scrollbar-color-track: #{$background-color};
+  --scrollbar-width: thin;
+  --scrollbar-width-legacy: 10px;
+
+  /* Legacy browsers with `::-webkit-scrollbar-*` support */
+  @supports selector(::-webkit-scrollbar) {
+    body::-webkit-scrollbar-thumb {
+      opacity: 0.5;
+      background: var(--scrollbar-color-thumb);
+      &:hover {
+        opacity: 1;
+      }
+    }
+    body::-webkit-scrollbar-track {
+      background: var(--scrollbar-color-track);
+    }
+    body::-webkit-scrollbar {
+      max-width: var(--scrollbar-width-legacy);
+      max-height: var(--scrollbar-width-legacy);
+    }
+  }
+
+  /* Modern browsers with `scrollbar-*` support */
+  @supports (scrollbar-width: auto) {
+    scrollbar-color: var(--scrollbar-color-thumb) var(--scrollbar-color-track);
+    scrollbar-width: var(--scrollbar-width);
+  }
+}
+
+body,
+a {
+  font-family: $primary-font;
+}
+
+a {
+  text-decoration: none;
+}
+
+.box {
+  border-radius: 16px;
+  border: 1.5px solid $primary-color-light !important;
+  background: $background-color !important;
+  backdrop-filter: blur(8.600000381469727px);
+}
+
+.header-logo-wrapper {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .header-logo {
+    height: 100%;
+  }
+  .header-logo-title {
+    color: #fff;
+    font-family: $logo-font;
+    font-size: 17.718px;
+    font-style: normal;
+    font-weight: 400;
+    margin: 0 20px;
+    padding: 0;
+    text-wrap: nowrap;
+
+    .node-name {
+      color: $secondary-color;
+    }
+  }
+}
+
+ion-content {
+  & {
+    --offset-top: -1.5rem !important;
+    --offset-bottom: -3rem !important;
+  }
+
+  & > * {
+    height: 100%;
+  }
+}
+
+.knowledge-asset-icon {
+  height: 48px;
+  width: 48px;
+  background: $secondary-color;
+  mask: url(/images/chatdkg/icons/knowledge-asset.svg);
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: left center;
+}

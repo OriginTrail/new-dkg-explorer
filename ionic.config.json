@@ -1,0 +1,5 @@
+{
+  "name": "dkg-edge-node",
+  "integrations": {},
+  "type": "vue-vite"
+}
