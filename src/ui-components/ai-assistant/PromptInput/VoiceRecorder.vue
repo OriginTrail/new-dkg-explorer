@@ -173,6 +173,7 @@ export default {
         .post(`${this.endpoints.dRAG}/server/api/audio`, formData, {
           withCredentials: true,
         })
+        .then((r) => r.data)
         .then(({ question }) => {
           this.$emit("audio-recorded", question);
           this.$emit("recording-status", VOICE_RECORDING_STATUS.FINISHED);

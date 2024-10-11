@@ -269,6 +269,7 @@ export default {
           },
           { withCredentials: true },
         )
+        .then((r) => r.data)
         .then((result) => {
           if (result.cannotAnswer === true) {
             this.qaPairs[this.qaPairs.length - 1].answer = {
