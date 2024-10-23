@@ -450,8 +450,20 @@ async function transformFilesToKAs() {
   filesUploading.value = true;
   animationUpload.value.getDotLottieInstance().play();
   try {
+    let uploadedFile = filesUploaded.value[0];
+    if (uploadedFile.type === "application/json") {
+      const fileContent = await uploadedFile.text();
+      const jsonContent = JSON.parse(fileContent);
+      if (!!jsonContent["@context"] || !!jsonContent["@type"])
+        uploadedFile = new File(
+          [fileContent],
+          uploadedFile.name.replace(".json", ".jsonld"),
+          { type: "application/ld+json" },
+        );
+    }
+
     const formData = new FormData();
-    formData.append("file", filesUploaded.value[0]);
+    formData.append("file", uploadedFile);
     const res = await axios.post(
       `${endpoints.edgeNodeBackend.value}/knowledge-bank/datasets/import`,
       formData,
