@@ -58,7 +58,7 @@
           prop="ual"
           sortable
           label="UAL"
-          width="260"
+          min-width="260"
           show-overflow-tooltip
           :formatter="(row) => formatUAL(row.ual)"
         />
@@ -69,29 +69,29 @@
           width="420"
           show-overflow-tooltip
         />
-        <el-table-column
-          prop="sender"
-          sortable
-          label="Owner"
-          min-width="160"
-          show-overflow-tooltip
-        />
-        <el-table-column
-          prop="transaction_hash"
-          sortable
-          label="TX Hash"
-          show-overflow-tooltip
-        >
-          <template #default="scope">
-            <a
-              class="table-link"
-              target="_blank"
-              :href="`https://sepolia.basescan.org/tx/${scope.row.transaction_hash}`"
-            >
-              {{ scope.row.transaction_hash }}
-            </a>
-          </template>
-        </el-table-column>
+<!--        <el-table-column-->
+<!--          prop="sender"-->
+<!--          sortable-->
+<!--          label="Owner"-->
+<!--          min-width="160"-->
+<!--          show-overflow-tooltip-->
+<!--        />-->
+<!--        <el-table-column-->
+<!--          prop="transaction_hash"-->
+<!--          sortable-->
+<!--          label="TX Hash"-->
+<!--          show-overflow-tooltip-->
+<!--        >-->
+<!--          <template #default="scope">-->
+<!--            <a-->
+<!--              class="table-link"-->
+<!--              target="_blank"-->
+<!--              :href="`https://sepolia.basescan.org/tx/${scope.row.transaction_hash}`"-->
+<!--            >-->
+<!--              {{ scope.row.transaction_hash }}-->
+<!--            </a>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
         <el-table-column
           prop="backend_synced_at"
           sortable
@@ -99,7 +99,7 @@
           width="160"
           :formatter="(row) => formatDate(row.backend_synced_at)"
         />
-        <el-table-column label="View" min-width="150">
+        <el-table-column label="View" min-width="150" width="150">
           <template #default="scope">
             <el-button
               link
