@@ -25,37 +25,13 @@ const routes = [
         meta: { requiresAuth: true },
       },
       {
-        path: "/knowledge-bank",
-        name: "KnowledgeBank",
-        component: () =>
-          import("./ui-components/edge-node/pages/KnowledgeBankPage.vue"),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: "/contribute",
-        name: "Contribute",
-        component: () =>
-          import("./ui-components/edge-node/pages/ContributePage.vue"),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: "/ai-assistant",
-        name: "AIAssistant",
-        component: () =>
-          import("./ui-components/edge-node/pages/AIAssistantPage.vue"),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: "/notifications",
-        name: "Notifications",
-        component: () =>
-          import("./ui-components/edge-node/pages/Notifications.vue"),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: "/settings",
-        name: "SettingsPage",
-        redirect: "/",
+        path: "/explore",
+        name: "KnowledgeGraphPage",
+        component: () => {
+          return import(
+            "./ui-components/edge-node/pages/KnowledgeGraphPage.vue"
+          );
+        },
         meta: { requiresAuth: true },
       },
     ],

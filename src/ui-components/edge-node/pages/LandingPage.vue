@@ -8,13 +8,13 @@
 
 <script>
 import { IonContent, IonPage } from "@ionic/vue";
-import MyNetworkPage from "./LandingPage/MyNetworkPage.vue";
+import ExplorerLandingPage from "./LandingPage/ExplorerLandingPage.vue";
 
 export default {
   components: { IonContent, IonPage },
   computed: {
     landingPage() {
-      return MyNetworkPage;
+      return ExplorerLandingPage;
     },
   },
 };

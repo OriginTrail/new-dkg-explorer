@@ -13,46 +13,11 @@
           <span v-if="nodeName" class="node-name">{{ nodeName }}</span>
         </p>
       </router-link>
-      <div class="tabs" v-if="isAuthenticated">
-        <ion-tab-button tab="/">
-          <router-link to="/" class="router-link">
-            <ion-label>Dashboard</ion-label>
-          </router-link>
-        </ion-tab-button>
-        <ion-tab-button tab="knowledge-bank">
-          <router-link to="/knowledge-bank" class="router-link">
-            <ion-label>
-              {{ "Knowledge bank" }}
-            </ion-label>
-          </router-link>
-        </ion-tab-button>
-        <ion-tab-button tab="contribute">
-          <router-link to="/contribute" class="router-link">
-            <ion-label>
-              {{ "Contribute" }}
-            </ion-label>
-          </router-link>
-        </ion-tab-button>
-        <ion-tab-button tab="ai-assistant">
-          <router-link to="/ai-assistant" class="router-link">
-            <ion-label>AI Assistant</ion-label>
-          </router-link>
-        </ion-tab-button>
-      </div>
+      <div class="tabs" v-if="isAuthenticated"></div>
       <div class="d-flex align-items-center justify-content-start">
-        <NotificationBadge v-if="isAuthenticated" />
-        <div v-if="isAuthenticated">
-          <ion-tab-button tab="settings" disabled>
-            <router-link to="/settings" class="router-link">
-              <ion-label>
-                <span style="vertical-align: middle" class="px-2">
-                  Settings
-                </span>
-              </ion-label>
-            </router-link>
-          </ion-tab-button>
-        </div>
-        <UserBadge v-if="isAuthenticated" />
+        <router-link :to="{ name: 'KnowledgeGraphPage' }">
+          <el-button type="primary" round size="large">Explore</el-button>
+        </router-link>
       </div>
     </ion-tab-bar>
   </ion-tabs>
@@ -68,8 +33,6 @@ import {
   IonTabButton,
   IonTabs,
 } from "@ionic/vue";
-import NotificationBadge from "@/ui-components/edge-node/single-components/NotificationBadge.vue";
-import UserBadge from "@/ui-components/edge-node/single-components/UserBadge.vue";
 import { useConfig } from "@/services/config";
 
 const { appConfig, config } = useConfig();
