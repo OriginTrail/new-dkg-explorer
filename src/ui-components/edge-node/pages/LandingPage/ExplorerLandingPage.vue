@@ -14,7 +14,11 @@
               Graph
             </h1>
             <form method="get" action="/explore">
-              <input name="ual" placeholder="Search by UAL or wallet address" />
+              <input
+                name="ual"
+                placeholder="Search by UAL or wallet address"
+                autocomplete="off"
+              />
               <button>Search</button>
             </form>
           </div>
