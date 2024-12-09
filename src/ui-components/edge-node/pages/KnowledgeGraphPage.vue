@@ -1,5 +1,11 @@
 <template>
-  <div ref="graphContainer" class="graph-container"></div>
+  <ion-page>
+    <ion-content class="background">
+      <div class="d-flex flex-column position-relative">
+        <div ref="graphContainer" class="graph-container"></div>
+      </div>
+    </ion-content>
+  </ion-page>
 </template>
 
 <script>
