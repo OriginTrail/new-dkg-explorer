@@ -22,7 +22,7 @@ const routes = [
         component: () => {
           return import("./ui-components/edge-node/pages/LandingPage.vue");
         },
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: false },
       },
       {
         path: "/explore",
@@ -32,7 +32,7 @@ const routes = [
             "./ui-components/edge-node/pages/KnowledgeGraphPage.vue"
           );
         },
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: false },
       },
     ],
   },
