@@ -144,8 +144,8 @@ export default {
         .showNavInfo(false)
         .backgroundColor(GRAPH_OPTIONS.backgroundColor);
 
-      graph.width(400);
-      graph.height(400);
+      graph.width(1);
+      graph.height(1);
       setTimeout(() => {
         graph.width(this.$refs.graphContainer.clientWidth);
         graph.height(this.$refs.graphContainer.clientHeight);
