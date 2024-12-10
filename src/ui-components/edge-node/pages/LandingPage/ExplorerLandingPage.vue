@@ -18,6 +18,7 @@
                 name="ual"
                 placeholder="Search by UAL or wallet address"
                 autocomplete="off"
+                required
               />
               <button>Search</button>
             </form>
