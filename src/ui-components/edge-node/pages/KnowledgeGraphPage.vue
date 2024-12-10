@@ -9,6 +9,7 @@
 </template>
 
 <script>
+import { IonContent, IonPage } from "@ionic/vue";
 import ForceGraph3D from "3d-force-graph";
 import * as THREE from "three"; // Import three.js
 import {
@@ -22,6 +23,7 @@ import {
 } from "@/utils/graphUtils.js";
 
 export default {
+  components: { IonPage, IonContent },
   name: "GraphComponent",
   mounted() {
     this.graph = null;

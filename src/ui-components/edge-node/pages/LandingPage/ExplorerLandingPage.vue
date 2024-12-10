@@ -54,6 +54,14 @@
   </ion-page>
 </template>
 
+<script>
+import { IonContent, IonPage } from "@ionic/vue";
+
+export default {
+  components: { IonPage, IonContent },
+};
+</script>
+
 <style scoped lang="scss">
 .home {
   gap: 24px;
