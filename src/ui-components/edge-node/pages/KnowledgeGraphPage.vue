@@ -4,7 +4,23 @@
       <div class="d-flex flex-column position-relative">
         <div class="page">
           <div class="sidebar">
-            <input type="search" placeholder="Search by node name" />
+            <div class="input">
+              <input type="search" placeholder="Search by node name" />
+              <svg
+                width="40"
+                height="40"
+                viewBox="0 0 40 40"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M19.3333 13.25C15.9736 13.25 13.25 15.9736 13.25 19.3333C13.25 22.6931 15.9736 25.4167 19.3333 25.4167C20.7429 25.4167 22.0404 24.9373 23.0719 24.1326L25.4696 26.5303L25.9999 27.0607L27.0606 26L26.5303 25.4697L24.1326 23.072C24.9372 22.0405 25.4167 20.7429 25.4167 19.3333C25.4167 15.9736 22.6931 13.25 19.3333 13.25ZM22.7427 22.3966C23.4726 21.5848 23.9167 20.5109 23.9167 19.3333C23.9167 16.802 21.8646 14.75 19.3333 14.75C16.802 14.75 14.75 16.802 14.75 19.3333C14.75 21.8646 16.802 23.9167 19.3333 23.9167C20.5109 23.9167 21.5848 23.4726 22.3966 22.7427L22.7427 22.3966Z"
+                  fill="#8B85F4"
+                />
+              </svg>
+            </div>
             <hgroup>
               <h1>Knowledge Asset profile</h1>
               <p>Latest update: 02/06/2023</p>
@@ -213,13 +229,25 @@ export default {
       margin: 0;
     }
 
-    input {
-      background: $background-color;
-      outline: none;
-      border: 1.5px solid $primary-color-light;
-      border-radius: 50px;
-      height: 48px;
-      padding: 8px 16px;
+    .input {
+      & > input {
+        background: $background-color;
+        outline: none;
+        border: 1.5px solid $primary-color-light;
+        border-radius: 50px;
+        height: 48px;
+        padding: 8px 16px;
+        width: 100%;
+      }
+
+      position: relative;
+
+      & > svg {
+        position: absolute;
+        right: 8px;
+        height: 48px;
+        width: 48px;
+      }
     }
     hgroup {
       padding: 12px;
