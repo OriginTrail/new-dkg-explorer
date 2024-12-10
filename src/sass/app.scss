@@ -61,7 +61,7 @@
   ) + ":wght@300..700&display=swap");
 
 ion-content.background {
-  --background: url($background-image) 0 0/100% 100% no-repeat;
+  --background: #03061c; // url($background-image) 0 0/100% 100% no-repeat;
 }
 
 html {

@@ -11,9 +11,10 @@ import NavigationComponent from "@/ui-components/edge-node/single-components/Nav
 
 <style scoped lang="scss">
 .ion-page {
-  background-image: url($background-image);
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
+  background: #03061c;
+  // background-image: url($background-image);
+  // background-position: center;
+  // background-size: cover;
+  // background-repeat: no-repeat;
 }
 </style>
