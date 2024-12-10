@@ -5,7 +5,7 @@
         <div class="page">
           <div class="sidebar">
             <div class="input">
-              <input type="search" placeholder="Search by node name" />
+              <input type="search" placeholder="Search by UAL" />
               <svg
                 width="40"
                 height="40"
