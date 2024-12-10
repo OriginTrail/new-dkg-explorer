@@ -258,9 +258,10 @@ export default {
             text-overflow: ellipsis;
 
             color: #fff;
-            font-weight: 500;
+            font-weight: 600;
 
             a {
+              font-weight: 500;
               color: #8b85f4;
               text-decoration: underline;
             }
