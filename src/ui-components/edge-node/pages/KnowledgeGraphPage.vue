@@ -2,7 +2,49 @@
   <ion-page>
     <ion-content class="background">
       <div class="d-flex flex-column position-relative">
-        <div ref="graphContainer" class="graph-container"></div>
+        <div class="page">
+          <div class="sidebar">
+            <input type="search" placeholder="Search by node name" />
+            <hgroup>
+              <h1>Knowledge Asset profile</h1>
+              <p>Latest update: 02/06/2023</p>
+            </hgroup>
+            <div class="info box">
+              <div class="main">
+                <img src="/images/ka.svg" />
+                <div>
+                  <dl>
+                    <dt>Name:</dt>
+                    <dd>
+                      “Machine Learning Algorithms for Predicting Stock Market
+                      Trends: A Comparative Study”
+                    </dd>
+                    <dt>Owner:</dt>
+                    <dd><a>Machine entusiast</a></dd>
+                    <dt>UAL:</dt>
+                    <dd><a>did:otp:0xDbF8e9d36A73C.../32145</a></dd>
+                    <dt>Blockchain:</dt>
+                    <dd><img /> Base</dd>
+                  </dl>
+                </div>
+              </div>
+              <hr />
+              <dl class="description">
+                <dt>Description:</dt>
+                <dd>
+                  “Dopamine plays important roles in cognitive function and
+                  inflamation and therefore is involved in the pathogenesis of
+                  neurodegenerative diseases, including Alzheimer’s disease
+                  (AD). Drugs that increase or maintain dopamine levels in the
+                  brain could be a therapeutic strategy for AD. However, the
+                  effects of dopamine and its precursor levodopa (L_DOPA) on
+                  Ab/tau pathology in vivo and the underlying molecular)"
+                </dd>
+              </dl>
+            </div>
+          </div>
+          <div ref="graphContainer" class="box graph-container"></div>
+        </div>
       </div>
     </ion-content>
   </ion-page>
@@ -86,6 +128,13 @@ export default {
         .showNavInfo(false)
         .backgroundColor(GRAPH_OPTIONS.backgroundColor);
 
+      graph.width(400);
+      graph.height(400);
+      setTimeout(() => {
+        graph.width(this.$refs.graphContainer.clientWidth);
+        graph.height(this.$refs.graphContainer.clientHeight);
+      }, 50);
+
       // Customize graph options based on your requirements
       // graph
       //   .warmupTicks(GRAPH_OPTIONS.warmupTicks)
@@ -149,8 +198,98 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.graph-container {
-  width: 100%;
-  height: 100%;
+.page {
+  display: flex;
+  gap: 24px;
+
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-width: 400px;
+    height: 100%;
+
+    dl {
+      margin: 0;
+    }
+
+    input {
+      background: $background-color;
+      outline: none;
+      border: 1.5px solid $primary-color-light;
+      border-radius: 50px;
+      height: 48px;
+      padding: 8px 16px;
+    }
+    hgroup {
+      padding: 12px;
+      background: url(/images/ka-profile-background.svg);
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: contain;
+      h1 {
+        font-weight: bold;
+        font-size: 16px;
+        font-family: "Manrope";
+      }
+      p {
+        font-size: 12px;
+        font-family: "Manrope";
+      }
+    }
+    .info {
+      padding: 24px 12px;
+      .main {
+        display: flex;
+        align-items: start;
+        gap: 12px;
+
+        dl {
+          display: grid;
+          grid-template-columns: auto 1fr;
+
+          dt {
+            font-weight: 400;
+          }
+
+          dd {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            color: #fff;
+            font-weight: 500;
+
+            a {
+              color: #8b85f4;
+              text-decoration: underline;
+            }
+          }
+        }
+      }
+      hr {
+        margin: 24px 0;
+        height: 1.5px;
+        background-color: $primary-color-light;
+      }
+      dl.description {
+        dt {
+          padding-right: 12px;
+        }
+
+        display: grid;
+        grid-template-columns: auto 1fr;
+        max-height: 200px;
+        overflow: scroll;
+      }
+    }
+
+    flex-basis: 0;
+  }
+
+  .graph-container {
+    height: 100%;
+    flex: 1;
+  }
 }
 </style>
