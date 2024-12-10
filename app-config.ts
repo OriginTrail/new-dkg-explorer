@@ -3,7 +3,7 @@ export const appConfig = {
   "$logo-graphic-only": "/images/edge-node-logo.svg",
   $logo: "/images/header-logo.svg",
   "$background-image": "/images/edge-node-background.png",
-  "$background-color": "#1A162180",
+  "$background-color": "#03061C80",
   "$primary-color": "#6A5B7E80",
   "$primary-color-light": "#6A5B7E",
   "$primary-color-dark": "#26202F",

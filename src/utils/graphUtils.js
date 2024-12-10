@@ -1,7 +1,7 @@
 import * as THREE from "three";
 
 export const GRAPH_OPTIONS = {
-  backgroundColor: "#080E0E",
+  backgroundColor: "#03061C40",
   warmupTicks: 100,
   cooldownTicks: 200,
   cooldownTime: 3000,
