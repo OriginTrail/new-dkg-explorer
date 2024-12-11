@@ -55,12 +55,16 @@ type GraphLinkData = {
   opacity: number;
 };
 
+type GraphLinkDynamicData = {
+  source: GraphNodeId;
+  target: GraphNodeId;
+};
+
 type GraphLink = {
   index: number;
-  linkType: GraphLinkData;
   source: GraphNode;
   target: GraphNode;
-};
+} & GraphLinkData;
 
 const nodeTypes = {
   knowledgeCollection: {
@@ -71,6 +75,12 @@ const nodeTypes = {
   },
   knowledgeAsset: {
     type: "KNOWLEDGE_ASSET",
+    color: "#8B85F4",
+    shape: "hexagonal_prism",
+    size: 8,
+  },
+  knowledgeAssetHidden: {
+    type: "KNOWLEDGE_ASSET_HIDDEN",
     color: "#6344DF",
     shape: "octahedron",
     size: 6,
@@ -291,17 +301,83 @@ export const createLink = (
   source: GraphNodeId,
   target: GraphNodeId,
   type: keyof typeof linkTypes,
-): {
-  linkType: GraphLinkData;
-  source: GraphNodeId;
-  target: GraphNodeId;
-} => {
+): GraphLinkData & GraphLinkDynamicData => {
   return {
-    linkType: linkTypes[type],
+    ...linkTypes[type],
     source,
     target,
   };
 };
+
+export class KnowledgeGraph {
+  private nodes: (GraphNodeData & GraphNodeDynamicData)[];
+  private links: (GraphLinkData & GraphLinkDynamicData)[];
+  private knowledgeCollectionShown = false;
+
+  constructor(
+    public readonly ual: string,
+    options: {
+      assertion?: Record<string, any>[];
+      showKnowledgeCollection?: boolean;
+    } = {},
+  ) {
+    this.nodes = [];
+    this.links = [];
+
+    if (options.showKnowledgeCollection) {
+      this.knowledgeCollectionShown = true;
+      this.nodes.push(createNode("knowledgeCollection", ual));
+    }
+
+    if (options.assertion) this.processAssertion(options.assertion);
+  }
+
+  processAssertion(assertion: Record<string, any>[]) {
+    for (const ka of assertion) {
+      if (!("@id" in ka))
+        throw new Error("Unexpected error - no @id field in assertion!");
+
+      const id = ka["@id"];
+      for (const relation in ka) {
+        if (relation === "@id") continue;
+
+        const props = ka[relation];
+        if (!Array.isArray(props) || !props.length)
+          throw new Error("Unexpected value in assertion - not an array!");
+
+        let source = id;
+        if (props.length !== 1) {
+          source = `${id}_${relation}_props`;
+          this.nodes.push(createNode("array", source));
+          this.links.push(createLink(id, source, "directed"));
+        }
+
+        for (const prop of props) {
+          let target = prop["@id"];
+          if (!target) {
+            const value = prop["@value"];
+            if (!value)
+              throw new Error(
+                "Unexpected error - no @value field in property!",
+              );
+
+            target = `${id}_${relation}_prop_${value}`;
+            this.nodes.push(createNode("property", target));
+          }
+          this.links.push(createLink(source, target, "directed"));
+        }
+      }
+      this.nodes.push(createNode("knowledgeAsset", id));
+
+      if (this.knowledgeCollectionShown)
+        this.links.push(createLink(this.ual, id, "directedCollection"));
+    }
+  }
+
+  get data() {
+    return { nodes: this.nodes, links: this.links };
+  }
+}
 
 export function generateGraphData() {
   const nodes = [];

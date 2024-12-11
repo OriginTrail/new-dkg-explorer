@@ -77,6 +77,7 @@ import {
   CAMERA,
   NODE_ZOOM,
   GRAPH_OPTIONS,
+  KnowledgeGraph,
 } from "@/utils/graphUtils";
 
 export default {
@@ -164,6 +165,34 @@ export default {
     },
     loadGraphForUAL(ual) {
       // TODO
+      const dataset = {
+        public: {
+          "@context": ["https://schema.org"],
+          "@id": "uuid:1",
+          company: ["OT", "TraceLabs"],
+          user: {
+            "@id": "uuid:user:1",
+          },
+          city: {
+            "@id": "uuid:belgrade",
+          },
+        },
+        private: {
+          "@context": ["https://schema.org"],
+          "@graph": [
+            {
+              "@id": "uuid:user:1",
+              name: "Adam",
+              lastname: "Smith",
+            },
+            {
+              "@id": "uuid:belgrade",
+              title: "Belgrade",
+              postCode: "11000",
+            },
+          ],
+        },
+      };
       const getResult = {
         assertion: [
           {
@@ -226,24 +255,91 @@ export default {
         },
       };
 
+      const getResult2 = {
+        assertion: [
+          {
+            "@id":
+              "https://ontology.origintrail.io/dkg/1.0#metadata-hash:0x3e9a458c821be3c074437941a52f8b99a62eb786b4806f6b4bc679204fd1d867",
+            "https://ontology.origintrail.io/dkg/1.0#representsPrivateResource":
+              [
+                {
+                  "@id": "uuid:17882f8e-e5a5-4c31-81d0-993bdd5cb43d",
+                },
+              ],
+          },
+          {
+            "@id":
+              "https://ontology.origintrail.io/dkg/1.0#metadata-hash:0x4414ac584c1838f95d96e553fe0991a9d6e9d8af5f4a3c3de4d0eb7f28e02244",
+            "https://ontology.origintrail.io/dkg/1.0#representsPrivateResource":
+              [
+                {
+                  "@id": "uuid:4723040c-8917-4985-a0d7-b6fe2f5ab858",
+                },
+              ],
+          },
+          {
+            "@id":
+              "https://ontology.origintrail.io/dkg/1.0#metadata-hash:0x68c2bf4b989458ecd9ec144c58b4389c4f7a7a05a4cf590256c9875cf4dea846",
+            "https://ontology.origintrail.io/dkg/1.0#representsPrivateResource":
+              [
+                {
+                  "@id": "uuid:c9ba85b4-f2ce-48c3-b59d-92af01603526",
+                },
+              ],
+          },
+          {
+            "@id":
+              "https://ontology.origintrail.io/dkg/1.0#metadata-hash:0x70e71eca692a451d414108bd51a04914b65c9bbe8b1f7d2737e7ebd364027ecb",
+            "https://ontology.origintrail.io/dkg/1.0#representsPrivateResource":
+              [
+                {
+                  "@id": "uuid:eca14561-9c0a-4354-a292-7ceb1623c997",
+                },
+              ],
+          },
+          {
+            "@id": "uuid:1",
+            "http://schema.org/city": [
+              {
+                "@id": "uuid:belgrade",
+              },
+            ],
+            "http://schema.org/company": [
+              {
+                "@value": "OT",
+              },
+              {
+                "@id": "urn:gg:1",
+              },
+            ],
+            "http://schema.org/user": [
+              {
+                "@id": "uuid:user:1",
+              },
+            ],
+          },
+          {
+            "@id": "uuid:4b8d6631-a75e-4b58-8451-1626e37d2e77",
+            "https://ontology.origintrail.io/dkg/1.0#privateMerkleRoot": [
+              {
+                "@value":
+                  "0x65a88ff6f248c3d537d3c9d278eecb5339c1a067aae5d2fc1ac100a458d10350",
+              },
+            ],
+          },
+        ],
+        operation: {
+          get: {
+            operationId: "294d449f-ec98-435d-812e-8ebe890255bd",
+            status: "COMPLETED",
+          },
+        },
+      };
+
       console.log("Loading graph for UAL:", ual);
 
-      const createNode = (typeKey, id) => {
-        const type = nodeTypes[typeKey];
-        return {
-          id,
-          type: type.name,
-          color: type.color,
-          shape: type.shape,
-          size: type.size,
-          glow: Math.random() >= 0.5 ? true : false,
-        };
-      };
-      const nodes = [];
-      const links = [];
-      for (const a of getResult.assertion) {
-        const id = a["@id"];
-      }
+      const graph = new KnowledgeGraph(ual, { assertion: getResult.assertion });
+      this.graph.graphData(graph.data);
     },
     zoomInOnNode(node) {
       if (this.targetNode?.id === node.id) {
