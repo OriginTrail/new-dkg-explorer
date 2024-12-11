@@ -78,6 +78,7 @@ const nodeTypes = {
     color: "#8B85F4",
     shape: "hexagonal_prism",
     size: 8,
+    glow: true,
   },
   knowledgeAssetHidden: {
     type: "KNOWLEDGE_ASSET_HIDDEN",
@@ -291,8 +292,8 @@ export const createNode = (
   const data = nodeTypes[typeKey];
   return {
     id,
-    ...data,
     glow: Math.random() >= 0.5 ? true : false,
+    ...data,
   };
 };
 
