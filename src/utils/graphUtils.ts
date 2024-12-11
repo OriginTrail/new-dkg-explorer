@@ -243,7 +243,25 @@ export function getNodeMesh(node: GraphNode) {
       text.backgroundColor = "#03061c";
       text.padding = [1.5 * node.size, node.size];
       text.borderRadius = node.size;
-      return text;
+
+      geometry = new THREE.SphereGeometry(3);
+      material = new THREE.MeshPhongMaterial({
+        color: "#ffffff",
+        emissive: node.color,
+        emissiveIntensity: 0.5,
+        shininess: 10,
+        specular: "#ffffff",
+        transparent: false,
+        opacity: 1,
+      });
+      const sphere = new THREE.Mesh(geometry, material);
+
+      const group = new THREE.Group();
+      sphere.position.set(0, -2.5 * node.size, 0);
+      group.add(sphere);
+      group.add(text);
+
+      return group;
     case "ka":
       const imgTexture = new THREE.TextureLoader().load(
         `./images/explorer-ka.png`,
