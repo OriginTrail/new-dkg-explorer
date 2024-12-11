@@ -251,7 +251,6 @@ export function getNodeMesh(node: GraphNode) {
 }
 
 export function getLinkMesh(link: GraphLink) {
-  console.log("L", link);
   const { source, target } = link;
 
   const positions = new Float32Array([
