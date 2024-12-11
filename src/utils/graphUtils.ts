@@ -23,81 +23,120 @@ export const CAMERA = {
 
 export const NODE_ZOOM = 15;
 
-export const nodeTypes = {
+type GraphNodeId = string | number;
+
+type GraphNodeData = {
+  type: string;
+  color: string;
+  shape: string;
+  size: number;
+  glow?: boolean;
+};
+
+type GraphNodeDynamicData = {
+  id: GraphNodeId;
+};
+
+type GraphNode = {
+  index: number;
+  x: number;
+  y: number;
+  z: number;
+  vx: number;
+  vy: number;
+  vz: number;
+} & GraphNodeDynamicData &
+  GraphNodeData;
+
+type GraphLinkData = {
+  type: string;
+  color: string;
+  width: number;
+  opacity: number;
+};
+
+type GraphLink = {
+  index: number;
+  linkType: GraphLinkData;
+  source: GraphNode;
+  target: GraphNode;
+};
+
+const nodeTypes = {
   knowledgeCollection: {
-    name: "KNOWLEDGE_COLLECTION",
+    type: "KNOWLEDGE_COLLECTION",
     color: "#8B85F4",
     shape: "hexagonal_prism",
     size: 10,
   },
   knowledgeAsset: {
-    name: "KNOWLEDGE_ASSET",
+    type: "KNOWLEDGE_ASSET",
     color: "#6344DF",
     shape: "octahedron",
     size: 6,
   },
   knowledgeAssetWithUrl: {
-    name: "KNOWLEDGE_ASSET_URL",
+    type: "KNOWLEDGE_ASSET_URL",
     color: "#6344DF",
     shape: "octahedron",
     size: 7,
     glow: true,
   },
   property: {
-    name: "PROPERTY",
+    type: "PROPERTY",
     color: "#1ADED7",
     shape: "sphere",
     size: 5,
   },
   propertyWithUrl: {
-    name: "PROPERTY_URL",
+    type: "PROPERTY_URL",
     color: "#1ADED7",
     shape: "sphere",
     size: 5,
     glow: true,
   },
   owner: {
-    name: "OWNER",
+    type: "OWNER",
     color: "#FF0087",
     shape: "toroid",
     size: 7,
   },
   array: {
-    name: "ARRAY",
+    type: "ARRAY",
     color: "#40797a",
     shape: "sphere",
     size: 3,
   },
-};
+} satisfies Record<string, GraphNodeData>;
 
-export const linkTypes = {
+const linkTypes = {
   directedCollection: {
-    name: "DIRECTED_COLLECTION",
+    type: "DIRECTED_COLLECTION",
     color: "#1ADED7",
     width: 2,
     opacity: 0.8,
   },
   undirectedCollection: {
-    name: "UNDIRECTED_COLLECTION",
+    type: "UNDIRECTED_COLLECTION",
     color: "#8B85F4",
     width: 1.5,
     opacity: 0.7,
   },
   directed: {
-    name: "DIRECTED",
+    type: "DIRECTED",
     color: "#1ADED7",
     width: 3,
     opacity: 0.9,
   },
   undirected: {
-    name: "UNDIRECTED",
+    type: "UNDIRECTED",
     color: "#8B85F4",
     width: 1,
     opacity: 0.6,
   },
-};
+} satisfies Record<string, GraphLinkData>;
 
-export function getNodeMesh(node) {
+export function getNodeMesh(node: GraphNode) {
   if (!node) {
     return new THREE.Mesh(
       new THREE.SphereGeometry(4),
@@ -201,7 +240,8 @@ export function getNodeMesh(node) {
   return mesh;
 }
 
-export function getLinkMesh(link) {
+export function getLinkMesh(link: GraphLink) {
+  console.log("L", link);
   const { source, target } = link;
 
   const positions = new Float32Array([
@@ -235,22 +275,38 @@ export function getLinkMesh(link) {
   return line;
 }
 
+export const createNode = (
+  typeKey: keyof typeof nodeTypes,
+  id: GraphNodeId,
+): GraphNodeData & GraphNodeDynamicData => {
+  const data = nodeTypes[typeKey];
+  return {
+    id,
+    ...data,
+    glow: Math.random() >= 0.5 ? true : false,
+  };
+};
+
+export const createLink = (
+  source: GraphNodeId,
+  target: GraphNodeId,
+  type: keyof typeof linkTypes,
+): {
+  linkType: GraphLinkData;
+  source: GraphNodeId;
+  target: GraphNodeId;
+} => {
+  return {
+    linkType: linkTypes[type],
+    source,
+    target,
+  };
+};
+
 export function generateGraphData() {
   const nodes = [];
   const links = [];
-  let currentNodeId = 0;
-
-  const createNode = (typeKey, id) => {
-    const type = nodeTypes[typeKey];
-    return {
-      id,
-      type: type.name,
-      color: type.color,
-      shape: type.shape,
-      size: type.size,
-      glow: Math.random() >= 0.5 ? true : false,
-    };
-  };
+  let currentNodeId = 100;
 
   nodes.push(createNode("knowledgeCollection", currentNodeId));
   const hexagonalPrismId = currentNodeId;
@@ -258,38 +314,26 @@ export function generateGraphData() {
 
   for (let i = 0; i < 2; i++) {
     nodes.push(createNode("property", currentNodeId));
-    links.push({
-      source: hexagonalPrismId,
-      target: currentNodeId,
-      linkType: linkTypes.directedCollection, // Random link type
-    });
+    links.push(
+      createLink(hexagonalPrismId, currentNodeId, "directedCollection"),
+    );
     currentNodeId++;
   }
 
   nodes.push(createNode("knowledgeAsset", currentNodeId));
   const octahedronId = currentNodeId;
-  links.push({
-    source: hexagonalPrismId,
-    target: octahedronId,
-    linkType: linkTypes.directedCollection, // Random link type
-  });
+  links.push(createLink(hexagonalPrismId, octahedronId, "directedCollection"));
   currentNodeId++;
 
   nodes.push(createNode("owner", currentNodeId));
-  links.push({
-    source: hexagonalPrismId,
-    target: currentNodeId,
-    linkType: linkTypes.undirectedCollection, // Random link type
-  });
+  links.push(
+    createLink(hexagonalPrismId, currentNodeId, "undirectedCollection"),
+  );
   currentNodeId++;
 
   for (let i = 0; i < 3; i++) {
     nodes.push(createNode("property", currentNodeId));
-    links.push({
-      source: octahedronId,
-      target: currentNodeId,
-      linkType: linkTypes.undirected, // Random link type
-    });
+    links.push(createLink(octahedronId, currentNodeId, "undirected"));
     currentNodeId++;
   }
 
@@ -297,21 +341,13 @@ export function generateGraphData() {
   for (let i = 0; i < 2; i++) {
     nodes.push(createNode("knowledgeAsset", currentNodeId));
     octahedronsToConnect.push(currentNodeId);
-    links.push({
-      source: octahedronId,
-      target: currentNodeId,
-      linkType: linkTypes.directed, // Random link type
-    });
+    links.push(createLink(octahedronId, currentNodeId, "directed"));
     currentNodeId++;
   }
 
   octahedronsToConnect.forEach((octahedron) => {
     nodes.push(createNode("array", currentNodeId));
-    links.push({
-      source: octahedron,
-      target: currentNodeId,
-      linkType: linkTypes.undirected, // Random link type
-    });
+    links.push(createLink(octahedron, currentNodeId, "undirected"));
     currentNodeId++;
   });
 
@@ -319,11 +355,7 @@ export function generateGraphData() {
   const lastKnowledgeAssetId = currentNodeId - 1; // Last knowledge asset is the last node added
   for (let i = 0; i < 2; i++) {
     nodes.push(createNode("property", currentNodeId));
-    links.push({
-      source: lastKnowledgeAssetId,
-      target: currentNodeId,
-      linkTypes: linkTypes.undirected,
-    });
+    links.push(createLink(lastKnowledgeAssetId, currentNodeId, "undirected"));
     currentNodeId++;
   }
 

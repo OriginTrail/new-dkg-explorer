@@ -74,11 +74,10 @@ import {
   generateGraphData,
   getNodeMesh,
   getLinkMesh,
-  linkTypes,
   CAMERA,
   NODE_ZOOM,
   GRAPH_OPTIONS,
-} from "@/utils/graphUtils.js";
+} from "@/utils/graphUtils";
 
 export default {
   components: { IonPage, IonContent },
@@ -165,7 +164,86 @@ export default {
     },
     loadGraphForUAL(ual) {
       // TODO
+      const getResult = {
+        assertion: [
+          {
+            "@id": "uuid:1",
+            "http://schema.org/city": [{ "@id": "uuid:belgrade" }],
+            "http://schema.org/company": [
+              { "@value": "OT" },
+              { "@value": "TraceLabs" },
+            ],
+            "http://schema.org/user": [{ "@id": "uuid:user:1" }],
+          },
+          {
+            "@id": "uuid:61e4e65b-954b-4e61-9ed5-0cd0cb4f8f19",
+            "http://schema.org/problem": [{ "@value": "empty" }],
+            "https://ontology.origintrail.io/dkg/1.0#privateAssertionID": [
+              {
+                "@value":
+                  "0xeefb437b24e5c5efe25eae42fe0aef075ddf49a3246c27fb8ceb371df92b6592",
+              },
+            ],
+          },
+          {
+            "@id": "uuid:7967c058-2409-4414-917a-8e792996e8c7",
+            "http://schema.org/solution": [{ "@value": "generate" }],
+            "https://ontology.origintrail.io/dkg/1.0#privateAssertionID": [
+              {
+                "@value":
+                  "0x55d0e89b9c2bde84af95fc30735bcb835e3f652e52a4222179ce7271bfd9c69a",
+              },
+            ],
+          },
+          {
+            "@id": "uuid:belgrade",
+            "http://schema.org/postCode": [{ "@value": "11000" }],
+            "http://schema.org/title": [{ "@value": "Belgrade" }],
+            "https://ontology.origintrail.io/dkg/1.0#privateAssertionID": [
+              {
+                "@value":
+                  "0xcc144908f7c85b1318bb600517d077a5fcf122d84901e0508180752802334a6b",
+              },
+            ],
+          },
+          {
+            "@id": "uuid:user:1",
+            "http://schema.org/lastname": [{ "@value": "Smith" }],
+            "http://schema.org/name": [{ "@value": "Adam" }],
+            "https://ontology.origintrail.io/dkg/1.0#privateAssertionID": [
+              {
+                "@value":
+                  "0xbd63fb177e23a4a90cf8fe60567aa5da19db3ebde18d51893acf92f04b6878d6",
+              },
+            ],
+          },
+        ],
+        operation: {
+          get: {
+            operationId: "32d9ad1a-7c16-40be-a0de-5e25f7e4ae21",
+            status: "COMPLETED",
+          },
+        },
+      };
+
       console.log("Loading graph for UAL:", ual);
+
+      const createNode = (typeKey, id) => {
+        const type = nodeTypes[typeKey];
+        return {
+          id,
+          type: type.name,
+          color: type.color,
+          shape: type.shape,
+          size: type.size,
+          glow: Math.random() >= 0.5 ? true : false,
+        };
+      };
+      const nodes = [];
+      const links = [];
+      for (const a of getResult.assertion) {
+        const id = a["@id"];
+      }
     },
     zoomInOnNode(node) {
       if (this.targetNode?.id === node.id) {
