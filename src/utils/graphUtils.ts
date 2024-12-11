@@ -242,7 +242,7 @@ export function getNodeMesh(node: GraphNode) {
       text.fontWeight = "bold";
       text.backgroundColor = "#03061c";
       text.padding = [1.5 * node.size, node.size];
-      text.borderRadius = 10;
+      text.borderRadius = node.size;
       return text;
     case "ka":
       const imgTexture = new THREE.TextureLoader().load(
