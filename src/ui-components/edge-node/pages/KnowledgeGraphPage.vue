@@ -142,6 +142,9 @@ export default {
       });
 
       graph
+        .linkWidth(0.5)
+        .linkColor("#dcdcdc")
+        .linkOpacity(0.3)
         .linkThreeObjectExtend(true)
         .linkThreeObject((link) => {
           return getLinkMesh(link);
