@@ -309,7 +309,7 @@ export function getLinkMesh(link: GraphLink) {
   const line = new THREE.Line(geometry, material);
   // TODO: merge line & text
 
-  const text = new SpriteText(value, 3, "lightgrey");
+  const text = new SpriteText(value, 2.5, "lightgrey");
   text.fontWeight = "bold";
 
   text.position.set(

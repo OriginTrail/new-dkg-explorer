@@ -69,6 +69,7 @@
 <script>
 import { IonContent, IonPage } from "@ionic/vue";
 import ForceGraph3D from "3d-force-graph";
+import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
 import * as THREE from "three"; // Import three.js
 import {
   generateGraphData,
@@ -118,6 +119,7 @@ export default {
       })(this.$refs.graphContainer)
         .showNavInfo(false)
         .backgroundColor(GRAPH_OPTIONS.backgroundColor);
+      graph.scene().background = new THREE.Color("#03061C");
 
       graph.width(1);
       graph.height(1);
@@ -175,6 +177,12 @@ export default {
         this.zoomInOnNode(node);
       });
 
+      const bloomPass = new UnrealBloomPass();
+      bloomPass.strength = 0.5;
+      bloomPass.radius = 1;
+      bloomPass.threshold = 0;
+
+      graph.postProcessingComposer().addPass(bloomPass);
       this.graph = graph;
       this.loadGraphForUAL(this.ual);
     },
@@ -492,6 +500,7 @@ export default {
   }
 
   .graph-container {
+    overflow: hidden;
     height: 100%;
     flex: 1;
   }
