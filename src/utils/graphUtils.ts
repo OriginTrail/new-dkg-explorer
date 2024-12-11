@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import SpriteText from "three-spritetext";
 
 export const GRAPH_OPTIONS = {
   backgroundColor: "#03061C40",
@@ -35,6 +36,7 @@ type GraphNodeData = {
 
 type GraphNodeDynamicData = {
   id: GraphNodeId;
+  value?: string;
 };
 
 type GraphNode = {
@@ -58,13 +60,15 @@ type GraphLinkData = {
 type GraphLinkDynamicData = {
   source: GraphNodeId;
   target: GraphNodeId;
+  value?: string;
 };
 
-type GraphLink = {
-  index: number;
-  source: GraphNode;
-  target: GraphNode;
-} & GraphLinkData;
+type GraphLink = GraphLinkDynamicData &
+  GraphLinkData & {
+    index: number;
+    source: GraphNode;
+    target: GraphNode;
+  };
 
 const nodeTypes = {
   knowledgeCollection: {
@@ -76,8 +80,8 @@ const nodeTypes = {
   knowledgeAsset: {
     type: "KNOWLEDGE_ASSET",
     color: "#8B85F4",
-    shape: "hexagonal_prism",
-    size: 8,
+    shape: "ka",
+    size: 10,
     glow: true,
   },
   knowledgeAssetHidden: {
@@ -95,15 +99,15 @@ const nodeTypes = {
   },
   property: {
     type: "PROPERTY",
-    color: "#1ADED7",
-    shape: "sphere",
-    size: 5,
+    color: "#8B85F4",
+    shape: "text",
+    size: 3,
   },
   propertyWithUrl: {
     type: "PROPERTY_URL",
     color: "#1ADED7",
     shape: "sphere",
-    size: 5,
+    size: 4,
     glow: true,
   },
   owner: {
@@ -232,6 +236,28 @@ export function getNodeMesh(node: GraphNode) {
         opacity: 1,
       });
       break;
+    case "text":
+      const text = new SpriteText(`${node.value}`, node.size, node.color);
+      text.material.depthWrite = false;
+      text.fontWeight = "bold";
+      text.backgroundColor = "#03061c";
+      text.padding = [1.5 * node.size, node.size];
+      text.borderRadius = 10;
+      return text;
+    case "ka":
+      const imgTexture = new THREE.TextureLoader().load(
+        `./images/explorer-ka.png`,
+      );
+      imgTexture.colorSpace = THREE.SRGBColorSpace;
+      const sprite = new THREE.Sprite(
+        new THREE.SpriteMaterial({
+          map: imgTexture,
+          transparent: true,
+          alphaTest: 0,
+        }),
+      );
+      sprite.scale.set(node.size * 2, node.size * 2, 0);
+      return sprite;
     default:
       geometry = new THREE.SphereGeometry(4);
       material = new THREE.MeshPhongMaterial({
@@ -252,8 +278,7 @@ export function getNodeMesh(node: GraphNode) {
 }
 
 export function getLinkMesh(link: GraphLink) {
-  const { source, target } = link;
-
+  const { source, target, value } = link;
   const positions = new Float32Array([
     source.x,
     source.y,
@@ -282,18 +307,31 @@ export function getLinkMesh(link: GraphLink) {
   });
 
   const line = new THREE.Line(geometry, material);
-  return line;
+  // TODO: merge line & text
+
+  const text = new SpriteText(value, 3, "lightgrey");
+  text.fontWeight = "bold";
+
+  text.position.set(
+    source.x + (source.x + target.x) / 2,
+    source.y + (source.y + target.y) / 2,
+    source.z + (source.z + target.z) / 2, // middle point
+  );
+
+  return text;
 }
 
 export const createNode = (
   typeKey: keyof typeof nodeTypes,
   id: GraphNodeId,
+  value?: string,
 ): GraphNodeData & GraphNodeDynamicData => {
   const data = nodeTypes[typeKey];
   return {
     id,
     glow: Math.random() >= 0.5 ? true : false,
     ...data,
+    value,
   };
 };
 
@@ -301,11 +339,13 @@ export const createLink = (
   source: GraphNodeId,
   target: GraphNodeId,
   type: keyof typeof linkTypes,
+  value?: string,
 ): GraphLinkData & GraphLinkDynamicData => {
   return {
     ...linkTypes[type],
     source,
     target,
+    value,
   };
 };
 
@@ -368,9 +408,11 @@ export class KnowledgeGraph {
               );
 
             target_id = `${ka_id}_${relation}_prop_${value}`;
-            this.nodes.push(createNode("property", target_id));
+            this.nodes.push(createNode("property", target_id, value));
           }
-          this.links.push(createLink(source_id, target_id, "directed"));
+          this.links.push(
+            createLink(source_id, target_id, "directed", relation),
+          );
         }
       }
       this.nodes.push(createNode("knowledgeAsset", ka_id));
@@ -384,6 +426,10 @@ export class KnowledgeGraph {
         this.nodes.push(createNode("knowledgeAssetHidden", id));
     }
   }
+
+  // addKnowledgeAsset() {}
+  // addPropertyArray() {}
+  // connectToKnowledgeCollection() {}
 
   get data() {
     return { nodes: this.nodes, links: this.links };

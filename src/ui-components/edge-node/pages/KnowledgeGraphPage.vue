@@ -141,9 +141,21 @@ export default {
         return getNodeMesh(node);
       });
 
-      graph.linkThreeObject((link) => {
-        return getLinkMesh(link);
-      });
+      graph
+        .linkThreeObjectExtend(true)
+        .linkThreeObject((link) => {
+          return getLinkMesh(link);
+        })
+        .linkPositionUpdate((sprite, { start, end }) => {
+          const middlePos = Object.assign(
+            ...["x", "y", "z"].map((c) => ({
+              [c]: start[c] + (end[c] - start[c]) / 2, // calc middle point
+            })),
+          );
+
+          // Position sprite
+          Object.assign(sprite.position, middlePos);
+        });
 
       graph.graphData(gData);
 
