@@ -1,9 +1,10 @@
 import { createRouter, createWebHistory } from "@ionic/vue-router";
+import { RouteRecordRaw } from "vue-router";
 import axios from "axios";
 import store from "./store";
 import AppLayout from "./ui-components/edge-node/AppLayout.vue";
 
-const routes = [
+const routes: RouteRecordRaw[] = [
   {
     path: "/",
     component: AppLayout,
@@ -33,6 +34,7 @@ const routes = [
           );
         },
         meta: { requiresAuth: false },
+        props: (route) => ({ ual: route.query.ual }),
       },
     ],
   },

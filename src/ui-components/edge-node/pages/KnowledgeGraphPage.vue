@@ -82,50 +82,25 @@ import {
 
 export default {
   components: { IonPage, IonContent },
-  name: "GraphComponent",
+  name: "KnowledgeGraphPage",
+  props: {
+    ual: {
+      type: String,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      targetNode: null,
+      // idMap: {},
+    };
+  },
+  watch: {},
   mounted() {
     this.graph = null;
     this.$nextTick(() => {
       this.initializeGraph();
     });
-  },
-  props: {
-    data: {
-      type: Object,
-      default: () => {},
-    },
-    search: {
-      type: String,
-      default: "",
-    },
-    zoomOut: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  emits: ["selected-node"],
-  data() {
-    return {
-      searchNodeId: this.search,
-      targetNode: null,
-      idMap: {},
-    };
-  },
-  watch: {
-    search(newVal) {
-      this.searchNodeId = newVal;
-      if (newVal) {
-        this.searchAndZoomNode();
-      }
-    },
-    data(newVal) {
-      this.initializeGraph();
-    },
-    zoomOut(newVal) {
-      if (newVal) {
-        this.zoomOutOnNode();
-      }
-    },
   },
   beforeDestroy() {
     if (this.graph) {
@@ -186,6 +161,11 @@ export default {
       });
 
       this.graph = graph;
+      this.loadGraphForUAL(this.ual);
+    },
+    loadGraphForUAL(ual) {
+      // TODO
+      console.log("Loading graph for UAL:", ual);
     },
     zoomInOnNode(node) {
       if (this.targetNode?.id === node.id) {
