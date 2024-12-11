@@ -1,5 +1,5 @@
 export const appConfig = {
-  "$logo-title": "DKG Edge Node",
+  "$logo-title": "DKG Explorer",
   "$logo-graphic-only": "/images/edge-node-logo.svg",
   $logo: "/images/header-logo.svg",
   "$background-image": "/images/edge-node-background.png",
