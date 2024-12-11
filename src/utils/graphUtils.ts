@@ -333,11 +333,15 @@ export class KnowledgeGraph {
   }
 
   processAssertion(assertion: Record<string, any>[]) {
+    const resolvedMap: Record<any, boolean> = {};
+
     for (const ka of assertion) {
       if (!("@id" in ka))
         throw new Error("Unexpected error - no @id field in assertion!");
 
-      const id = ka["@id"];
+      const ka_id = ka["@id"];
+      resolvedMap[ka_id] = true;
+
       for (const relation in ka) {
         if (relation === "@id") continue;
 
@@ -345,32 +349,39 @@ export class KnowledgeGraph {
         if (!Array.isArray(props) || !props.length)
           throw new Error("Unexpected value in assertion - not an array!");
 
-        let source = id;
+        let source_id = ka_id;
         if (props.length !== 1) {
-          source = `${id}_${relation}_props`;
-          this.nodes.push(createNode("array", source));
-          this.links.push(createLink(id, source, "directed"));
+          source_id = `${ka_id}_${relation}_props`;
+          this.nodes.push(createNode("array", source_id));
+          this.links.push(createLink(ka_id, source_id, "directed"));
         }
 
         for (const prop of props) {
-          let target = prop["@id"];
-          if (!target) {
+          let target_id = prop["@id"];
+          if (target_id) {
+            if (!resolvedMap[target_id]) resolvedMap[target_id] = false;
+          } else {
             const value = prop["@value"];
             if (!value)
               throw new Error(
                 "Unexpected error - no @value field in property!",
               );
 
-            target = `${id}_${relation}_prop_${value}`;
-            this.nodes.push(createNode("property", target));
+            target_id = `${ka_id}_${relation}_prop_${value}`;
+            this.nodes.push(createNode("property", target_id));
           }
-          this.links.push(createLink(source, target, "directed"));
+          this.links.push(createLink(source_id, target_id, "directed"));
         }
       }
-      this.nodes.push(createNode("knowledgeAsset", id));
+      this.nodes.push(createNode("knowledgeAsset", ka_id));
 
       if (this.knowledgeCollectionShown)
-        this.links.push(createLink(this.ual, id, "directedCollection"));
+        this.links.push(createLink(this.ual, ka_id, "directedCollection"));
+    }
+
+    for (const id in resolvedMap) {
+      if (!resolvedMap[id])
+        this.nodes.push(createNode("knowledgeAssetHidden", id));
     }
   }
 
