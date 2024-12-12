@@ -100,7 +100,7 @@ const nodeTypes = {
   property: {
     type: "PROPERTY",
     color: "#8B85F4",
-    shape: "text",
+    shape: "sphere_text",
     size: 3,
   },
   propertyWithUrl: {
@@ -236,7 +236,7 @@ export function getNodeMesh(node: GraphNode) {
         opacity: 1,
       });
       break;
-    case "text":
+    case "sphere_text":
       const text = new SpriteText(`${node.value}`, node.size, node.color);
       text.material.depthWrite = false;
       text.fontWeight = "bold";
@@ -244,7 +244,7 @@ export function getNodeMesh(node: GraphNode) {
       text.padding = [1.5 * node.size, node.size];
       text.borderRadius = node.size;
 
-      geometry = new THREE.SphereGeometry(3);
+      geometry = new THREE.SphereGeometry(node.size);
       material = new THREE.MeshPhongMaterial({
         color: "#ffffff",
         emissive: node.color,
@@ -257,9 +257,9 @@ export function getNodeMesh(node: GraphNode) {
       const sphere = new THREE.Mesh(geometry, material);
 
       const group = new THREE.Group();
-      sphere.position.set(0, -2.5 * node.size, 0);
-      group.add(sphere);
+      text.translateY(2.5 * node.size);
       group.add(text);
+      group.add(sphere);
 
       return group;
     case "ka":
