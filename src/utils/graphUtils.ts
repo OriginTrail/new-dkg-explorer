@@ -118,7 +118,7 @@ const nodeTypes = {
   },
   array: {
     type: "ARRAY",
-    color: "#40797a",
+    color: "#1ADEDC",
     shape: "sphere",
     size: 3,
   },
@@ -238,11 +238,13 @@ export function getNodeMesh(node: GraphNode) {
       break;
     case "sphere_text":
       const text = new SpriteText(`${node.value}`, node.size, node.color);
-      text.material.depthWrite = false;
+      // text.material.depthWrite = false;
       text.fontWeight = "bold";
       text.backgroundColor = "#03061c";
       text.padding = [1.5 * node.size, node.size];
       text.borderRadius = node.size;
+      text.borderColor = "#8B85F4";
+      text.borderWidth = 0.2;
 
       geometry = new THREE.SphereGeometry(node.size);
       material = new THREE.MeshPhongMaterial({
@@ -257,7 +259,7 @@ export function getNodeMesh(node: GraphNode) {
       const sphere = new THREE.Mesh(geometry, material);
 
       const group = new THREE.Group();
-      text.translateY(2.5 * node.size);
+      text.translateY(3 * node.size);
       group.add(text);
       group.add(sphere);
 
@@ -367,10 +369,13 @@ export const createLink = (
   };
 };
 
+type KnowledgeGraphAssertion = Record<string, any>;
+
 export class KnowledgeGraph {
   private nodes: (GraphNodeData & GraphNodeDynamicData)[];
   private links: (GraphLinkData & GraphLinkDynamicData)[];
   private knowledgeCollectionShown = false;
+  private resolvedMap: Record<GraphNodeId, number> = {};
 
   constructor(
     public readonly ual: string,
@@ -387,18 +392,15 @@ export class KnowledgeGraph {
       this.nodes.push(createNode("knowledgeCollection", ual));
     }
 
-    if (options.assertion) this.processAssertion(options.assertion);
+    if (options.assertion) this.addKnowledgeAssets(...options.assertion);
   }
 
-  processAssertion(assertion: Record<string, any>[]) {
-    const resolvedMap: Record<any, boolean> = {};
-
+  addKnowledgeAssets(...assertion: KnowledgeGraphAssertion[]) {
     for (const ka of assertion) {
       if (!("@id" in ka))
         throw new Error("Unexpected error - no @id field in assertion!");
 
       const ka_id = ka["@id"];
-      resolvedMap[ka_id] = true;
 
       for (const relation in ka) {
         if (relation === "@id") continue;
@@ -417,7 +419,11 @@ export class KnowledgeGraph {
         for (const prop of props) {
           let target_id = prop["@id"];
           if (target_id) {
-            if (!resolvedMap[target_id]) resolvedMap[target_id] = false;
+            if (!(target_id in this.resolvedMap)) {
+              const mockNode = createNode("knowledgeAssetHidden", target_id);
+              this.nodes.push(mockNode);
+              this.resolvedMap[target_id] = this.nodes.length - 1;
+            }
           } else {
             const value = prop["@value"];
             if (!value)
@@ -433,21 +439,20 @@ export class KnowledgeGraph {
           );
         }
       }
-      this.nodes.push(createNode("knowledgeAsset", ka_id));
+
+      const node = createNode("knowledgeAsset", ka_id);
+      const i = this.resolvedMap[ka_id];
+      if (typeof i === "number") {
+        this.nodes[i] = node;
+      } else {
+        this.nodes.push(node);
+        this.resolvedMap[ka_id] = this.nodes.length - 1;
+      }
 
       if (this.knowledgeCollectionShown)
         this.links.push(createLink(this.ual, ka_id, "directedCollection"));
     }
-
-    for (const id in resolvedMap) {
-      if (!resolvedMap[id])
-        this.nodes.push(createNode("knowledgeAssetHidden", id));
-    }
   }
-
-  // addKnowledgeAsset() {}
-  // addPropertyArray() {}
-  // connectToKnowledgeCollection() {}
 
   get data() {
     return { nodes: this.nodes, links: this.links };
