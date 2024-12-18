@@ -6,4 +6,15 @@ const OPERATION_STATUSES = {
     'NOT-READY': 'NOT-READY'
 };
 
-module.exports = { OPERATION_STATUSES };
+function parseEnvArray(envVariable) {
+    if (!envVariable) return [];
+    return envVariable
+        .slice(1, -1)
+        .split(',')
+        .map(item => item.trim().replace(/^'|'$/g, ''));
+}
+
+module.exports = {
+    OPERATION_STATUSES,
+    parseEnvArray
+};

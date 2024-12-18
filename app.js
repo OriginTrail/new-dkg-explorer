@@ -2,13 +2,9 @@ require('dotenv').config();
 
 const express = require('express');
 // const { createAssetJob } = require('./queue');
-require('./sync-assets-queue');
 const cors = require('cors');
-const cookieParser = require('cookie-parser');
 const app = express();
 const port = process.env.PORT || 3000;
-
-app.use(cookieParser());
 
 // Middleware
 app.use(express.json());
@@ -40,10 +36,9 @@ app.set('trust proxy', 1);
 const dashboardRoutes = require('./routes/dashboard');
 const knowledgeBankRoutes = require('./routes/knowledgeBank');
 const notificationRoutes = require('./routes/notifications');
+const graphRoutes = require('./routes/graph');
 
-app.use('/dashboard', dashboardRoutes);
-app.use('/knowledge-bank', knowledgeBankRoutes);
-app.use('/notifications', notificationRoutes);
+app.use('/graph', graphRoutes);
 
 const server = app.listen(port, () => {
     console.log(`Edge node backend running on port ${port}`);
